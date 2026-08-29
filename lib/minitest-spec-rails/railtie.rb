@@ -5,8 +5,16 @@ module MiniTestSpecRails
 
     config.before_initialize do |_app|
       require 'active_support'
-      require 'minitest-spec-rails/init/active_support'
       require 'minitest-spec-rails/parallelize'
+
+      if Rails.gem_version >= Gem::Version.new('5.1')
+        ActiveSupport.on_load(:active_support_test_case) do
+          require 'minitest-spec-rails/init/active_support'
+        end
+      else
+        require 'minitest-spec-rails/init/active_support'
+      end
+
       ActiveSupport.on_load(:action_cable) do
         require 'minitest-spec-rails/init/action_cable'
       end
